@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#ifdef LOCAL
+#include "debug.h"
+#else
+#define debug(...)
+#endif
+
+#define ll long long
+#define int long long
+
+
+void solve() {
+    int n, m; cin >> n >> m;
+    int w = m - 1, l = 0;
+    int r = n - w;
+    if (r <= 0 && cout << "NO\n") return;
+    if (n == 1 && cout << "NO\n") return;
+    while (r > 1 && l < m - 2) r--, l++;
+    if (r == 1 && cout << "YES\n") return;
+    l++, r--;
+    debug(w, l, r)
+    if (r > 1 && !(r & 1)) cout << "YES\n";
+    else cout << "NO\n";
+
+}
+
+int32_t main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0), cout.tie(0);
+    int _TEST = 1;
+    cin>>_TEST;
+    for(int _ = 1; _ <= _TEST; _++) {
+        cout << "Case #" << _ << ": ";
+        solve();
+    }
+        
+}

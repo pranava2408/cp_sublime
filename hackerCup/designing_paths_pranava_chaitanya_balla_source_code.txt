@@ -1,0 +1,266 @@
+#include <bits/stdc++.h>
+#include <queue>
+
+#ifndef ONLINE_JUDGE
+#include "../debug.h"
+#else
+#define debug(...)
+#endif
+
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds;
+
+template <class T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+template <class T>
+using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+#define ll long long
+#define ld long double
+
+const ld eps = 1e-12;
+
+struct Node {
+  
+  Node(ll val, ll idx) {
+    
+  }
+  Node() {
+    
+  }
+};
+
+struct Stree {
+  vector<Node> segtree;
+  vector<ll> arr;
+  void init(ll n, vector<ll> A) {
+    arr = A;
+    segtree.resize(4 * (n + 1));
+  }
+
+  Node merge(const Node &left,const Node &right) {
+    Node cur;
+    
+    return cur;
+  }
+
+  void propagate(ll tl, ll tr, ll node) {
+    
+  }
+
+  void build(ll l, ll r, ll node) {
+    if (l > r) return;
+    if (l == r) {
+      segtree[node] = Node(arr[l], l);
+      return;
+    }
+    ll mid = (l + r) >> 1;
+    build(l, mid, 2 * node);
+    build(mid + 1, r, 2 * node + 1);
+    segtree[node] = merge(segtree[2 * node], segtree[2 * node + 1]);
+  }
+
+  Node query(ll l, ll r, ll tl, ll tr, ll node) {
+    propagate(tl, tr, node);
+    if (l > r || tl > tr || tl > r || tr < l) return Node();
+
+    if (tl >= l && tr <= r) {
+      return segtree[node];
+    }
+
+    ll mid = (tl + tr) >> 1;
+    return merge(query(l, r, tl, mid, 2 * node) ,
+                 query(l, r, mid + 1, tr, 2 * node + 1));
+  }
+
+  /*
+  ll query(ll idx,ll tl, ll tr, ll node)
+  {
+      propagate(tl,tr,node);
+
+      if(tl==tr){
+              return segtree[node].sum;
+      }
+
+      ll mid=(tl+tr)>>1;
+      if(idx<=mid){
+              return query(idx,tl,mid,2*node);
+      }
+
+      return query(idx,mid+1,tr,2*node+1);
+
+  }
+  */
+
+  void update(ll l, ll r, ll type, ll tl, ll tr, ll node) {
+    propagate(tl, tr, node);
+    ll mid = (tl + tr) >> 1;
+    if (tl > tr || tr < l || tl > r || l > r) return;
+
+    if (tl >= l && tr <= r) {
+      // we apply update
+      return;
+    }
+    update(l, r, type, tl, mid, 2 * node);
+    update(l, r, type, mid + 1, tr, 2 * node + 1);
+
+    segtree[node] = merge(segtree[2 * node], segtree[2 * node + 1]);
+  }
+  
+  
+  void update(ll l, ll val, ll tl, ll tr, ll node) {
+    propagate(tl, tr, node);
+    ll mid = (tl + tr) >> 1;
+    if (tl > tr || tr < l || tl > l) return;
+
+    if (tl==l && tr == l) {
+      segtree[node] = Node(val,l);
+      return;
+    }
+    update(l, val,tl, mid, 2 * node);
+    update(l, val,mid + 1, tr, 2 * node + 1);
+
+    segtree[node] = merge(segtree[2 * node], segtree[2 * node + 1]);
+  } 
+};
+
+void solve(ll test) {
+	ll n, k, m; cin >> n >> k >> m;
+	vector<ll> paths[m];
+	for (ll i = 0; i < m; i++) {
+		ll len; cin >> len;
+		for (ll j = 0; j < len; j++) {
+			ll val; cin >> val;
+			paths[i].push_back(val);
+		}
+	}
+
+
+	// if (test == 6) {
+	// 	debug(n, k, m);
+	// 	for (auto pos : paths) {
+	// 		debug(pos);
+	// 	}
+	// }
+	// vector<ll> graph[n + 1];
+	// for (ll i = 0; i < m; i++) {
+	// 	ll len = paths[i].size();
+	// 	for (ll j = 0; j < len - 1; j++) {
+	// 		graph[paths[i][j]].push_back(paths[i][j + 1]);
+	// 	}
+	// }
+
+
+	// vector<bool> vis(n + 1, false);
+
+	// queue<ll>bfs;
+	// bfs.push(1);
+	// vis[1] = true;
+	// while (bfs.size()) {
+	// 	auto u = bfs.front();
+	// 	bfs.pop();
+	// 	for (auto pos : graph[u]) {
+	// 		if (!vis[pos]) {
+	// 			vis[pos] = true;
+	// 			bfs.push(pos);
+	// 		}
+	// 	}
+	// }
+
+
+	// ll ans = 0;
+	// for (ll i = 1; i <= n; i++) {
+	// 	if (!vis[i]) {
+	// 		ans -= i;
+	// 	}
+	// }
+	// // cout << ans << '\n';
+	// for (ll i = 0 ; i < m; i++) {
+	// 	reverse(paths[i].begin(), paths[i].end());
+	// 	while (paths[i].size() && !vis[paths[i].back()]) {
+	// 		paths[i].pop_back();
+	// 	}
+	// 	reverse(paths[i].begin(), paths[i].end());
+	// }
+
+
+	vector<pair<ll, ll>> nex[n + 1];
+	for (ll i = 0; i < m; i++) {
+		ll len = paths[i].size();
+		for (ll j = 0; j < len; j++) {
+			nex[paths[i][j]].push_back({i, j});
+		}
+	}
+
+
+	vector<ll> cost(n + 1, -1);
+
+	cost[1] = 0;
+
+	queue<ll> bfs;
+	bfs.push(1);
+	while (bfs.size()) {
+		auto node = bfs.front();
+		bfs.pop();
+		for (auto pos : nex[node]) {
+			ll pthNo = pos.first;
+			ll len = paths[pos.first].size();
+			ll idx = pos.second + 1;
+			for (ll j = idx, cos = 1; j < len; j++, cos++) {
+				if (cos > k)break;
+
+
+				// if (cost[paths[pthNo][j]] != cost[node]) {
+				// 	break;
+				// }
+				if (cost[paths[pthNo][j]] == -1) {
+
+					cost[paths[pthNo][j]] = cost[node] + 1;
+					bfs.push(paths[pthNo][j]);
+				} else if (cost[paths[pthNo][j]] < cost[node])break;
+			}
+		}
+	}
+	ll ans = 0;
+	for (ll i = 1; i <= n; i++) {
+		ans += i * cost[i];
+	} cout << ans << '\n';
+
+}
+
+void main_() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+#ifndef ONLINE_JUDGE
+	freopen("F:\\cp_sublime\\input.txt", "r", stdin);
+	freopen("F:\\cp_sublime\\output.txt", "w", stdout);
+	freopen("F:\\cp_sublime\\debug.txt", "w", stderr);
+#endif
+	int tt = 1;
+	cin >> tt;
+	for (ll i = 1; i <= tt; i++) {
+		cout << "Case #" << i << ": ";
+		solve(i);
+	}
+}
+
+static void run_main() {
+	main_();
+	exit(0);
+}
+int main() {
+	size_t stsize = 1024 * 1024 * 1024; // run with a 1 GiB stack
+	char *stack, *send;
+	stack = (char *)malloc(stsize);
+	send = stack + stsize;
+	send = (char *)((uintptr_t)send / 16 * 16);
+	asm volatile(
+	    "mov %0, %%rsp\n"
+	    "call *%1\n"
+	    :
+	    : "r"(send), "r"(run_main));
+	return 0;
+}

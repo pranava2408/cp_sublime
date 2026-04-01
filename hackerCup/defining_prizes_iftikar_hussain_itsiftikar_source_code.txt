@@ -1,0 +1,120 @@
+#include<bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+#pragma GCC optimize("Ofast")
+using namespace std;
+using namespace __gnu_pbds;
+/*<----------------------------template starts--------------------------------->*/
+#define itsiftikar02     ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL)
+#define yes           cout<<"YES"<<endl;
+#define no           cout<<"NO"<<endl;
+#define fr(i,s,n)     for(int i=s;i<n;i++)
+#define int         long long
+#define ld         long double
+#define get(a)      for(auto &e : a) cin>>e;
+#define put(a)      for(int e : a) cout << e << " "; cout << endl;
+#define all(v)      v.begin(),v.end()
+#define allEqual(a) *max_element(all(a))==*min_element(all(a))
+#define lsort(v)    sort(all(v))
+#define rsort(v)    sort(v.rbegin(),v.rend())
+#define mod         1000000007
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
+#define endl        "\n" 
+#define debug(x) cout << #x << " = " << x << "\n";
+#define vdebug(a) cout << #a << " = "; for(auto x: a) cout << x << " "; cout << "\n";
+#define mpdebug(a)   cout<<#a<<" = "<<"\n";for(auto it:a)    cout<<it.first<<" "<<it.second<<"\n";
+#define stdebug(a)   cout<<#a<<" = ";for(auto it:a)    cout<<it<<" ";  cout<<"\n"
+int max(int a,int b) {return (a>=b)?a:b;}
+int min(int a,int b) {return (a<=b)?a:b;}
+int max(int a,int b,int c) {return max(a,max(b,c));}
+int min(int a,int b,int c) {return min(a,min(b,c));}
+int power(int x,int y){int res=1;x=x%mod;while(y>0){if(y&1) res=(res*x)%mod;y=y>>1;x=(x*x) % mod;}return res;}
+int modInverse(int n){return power(n, mod - 2);}
+int ceil(int a,int b){return (a+b-1)/b;}
+/*<----------------------------template ends--------------------------------->*/
+void solve()
+{
+    int n,m;
+    cin>>n>>m;
+    vector<int>a(n),b(m);
+    get(a);
+    get(b);
+    sort(a.begin(),a.end());
+    vector<int>cnt;
+    for(int i=0;i<n;){
+        int j=i;
+        while(j<n && a[j]==a[i]) 
+        ++j;
+        cnt.push_back(j-i);
+        i=j;
+    }
+    int k=(int)cnt.size();
+    int maxl=min(k,m);
+    sort(b.begin(),b.end());
+    vector<int>pref(m+1,0);
+    for(int i=0;i<m;++i) 
+    pref[i+1]=pref[i]+b[i];
+    auto summinb=[&](int K)->int{
+        if(K<=0) 
+        return 0;
+        int p=upper_bound(b.begin(),b.end(),K)-b.begin();
+        int s_le=pref[p];
+        int cnt_gt=m-p;
+        return s_le+cnt_gt*(int)K;
+    };
+    auto feasible=[&](int L)->bool{
+        if(L==0) 
+        return true;
+        if(L>m) 
+        return false;
+        vector<int>freq(L+1,0);
+        for(int t=1;t<=L;++t) 
+        freq[t]=cnt[k-L+(t-1)];
+        vector<int>cum(L+2,0),sumd(L+2,0);
+        for(int v=L;v>=1;--v){
+            cum[v]=cum[v+1]+freq[v];
+            sumd[v]=sumd[v+1]+(int)v*freq[v];
+        }
+        int totald=sumd[1];
+        int totals=pref[m];
+        if(totald>totals) 
+        return false;
+        for(int v=L;v>=1;--v){
+            int K=cum[v];
+            if(K==0) continue;
+            int left=sumd[v];
+            int right=summinb(K);
+            if(left>right) return false;
+        }
+        return true;
+    };
+    int lo=0,hi=maxl,best=0;
+    while(lo<=hi){
+        int mid=(lo+hi)>>1;
+        if(feasible(mid))
+        {
+            best=mid;lo=mid+1;
+        }
+        else
+        hi=mid-1;
+    }
+    int ans=0;
+    for(int i=k-best;i<k;++i){
+        if(i>=0) 
+        ans+=cnt[i];
+    }
+    cout<<ans<<endl;
+}
+int32_t main()
+{
+    itsiftikar02;
+    freopen("input.txt","r",stdin);
+    freopen("output.txt","w",stdout);
+    int _=1;
+    cin>>_;
+    for(int i=1;i<=_;i++){
+        cout<<"Case #"<<i<<": ";
+        solve();
+    }
+    return 0;
+}

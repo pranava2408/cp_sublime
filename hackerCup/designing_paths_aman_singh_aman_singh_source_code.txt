@@ -1,0 +1,138 @@
+#include <bits/stdc++.h>
+using namespace std;
+static const int INF = -1;
+
+
+void solve()
+{
+    int N, K, M;
+    cin >> N >> K >> M;
+
+    vector<vector<int>> route(M + 1);
+    vector<int> L(M + 1);
+
+    vector<vector<pair<int,int>>> occ(N + 1); 
+    long long sumLen = 0;
+
+    for (int i = 1; i <= M; i++)
+    {
+        int Li;
+        cin >> Li;
+        L[i] = Li;
+        sumLen += Li;
+
+        route[i].resize(Li + 2); 
+
+        for (int j = 1; j <= Li; j++)
+        {
+            int a;
+            cin >> a;
+            route[i][j] = a;
+            occ[a].push_back({i, j});
+        }
+    }
+
+    
+    vector<vector<int>> parent(M + 1);
+    for (int i = 1; i <= M; i++)
+    {
+        parent[i].resize(L[i] + 3);
+        for (int j = 1; j <= L[i] + 1; j++)
+            parent[i][j] = j;
+    }
+
+    function<int(int, int)> find_next = [&](int r, int x)
+    {
+        if (x >= (int)parent[r].size()) return x;
+        if (parent[r][x] == x) return x;
+        return parent[r][x] = find_next(r, parent[r][x]);
+    };
+
+    
+    vector<int> dist(N + 1, INF);
+    dist[1] = 0;
+
+    queue<int> q;
+    q.push(1);
+
+    while (!q.empty())
+    {
+        int u = q.front(); q.pop();
+        int du = dist[u];
+
+        for (auto &oc : occ[u])
+        {
+            int r = oc.first;
+            int pos = oc.second;
+
+            int start = pos + 1;
+            if (start > L[r]) continue;
+
+            int limit = pos + K;
+            if (limit > L[r]) limit = L[r];
+
+            int idx = find_next(r, start);
+            while (idx <= limit)
+            {
+                int v = route[r][idx];
+                if (dist[v] == INF)
+                {
+                    dist[v] = du + 1;
+                    q.push(v);
+                }
+
+                parent[r][idx] = idx + 1;
+                idx = find_next(r, idx);
+            }
+        }
+    }
+
+    long long ans = 0;
+    for (int i = 1; i <= N; i++)
+    {
+        if (dist[i] == INF) ans += 1LL * i * -1;
+        else ans += 1LL * i * dist[i];
+    }
+
+    cout << ans;
+}
+
+
+void main_()
+{
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+
+    int tt;
+    cin >> tt;
+    for (int i = 1; i <= tt; i++)
+    {
+        cout << "Case #" << i << ": ";
+        solve();
+        if (i != tt) cout << "\n";
+    }
+}
+
+static void run_with_stack_size(void (*func)(void), size_t stsize)
+{
+    char *stack, *send;
+    stack = (char *)malloc(stsize);
+    send = stack + stsize - 16;
+    send = (char *)((uintptr_t)send / 16 * 16);
+    asm volatile(
+        "mov %%rsp,(%0)\n"
+        "mov %0,%%rsp\n"
+        :
+        : "r"(send));
+
+    func();
+
+    asm volatile("mov (%0),%%rsp\n" : : "r"(send));
+    free(stack);
+}
+
+int main()
+{
+    run_with_stack_size(main_, 1024 * 1024 * 1024);
+    return 0;
+}
