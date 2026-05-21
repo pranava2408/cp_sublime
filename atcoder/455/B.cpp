@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
@@ -25,12 +24,34 @@ const ld eps = 1e-12;
 
 
 void solve() {
-	ll n; cin >> n;
-	string str; cin >> str;
-	reverse(str.begin(), str.end());
-	while (str.size() && str.back() == 'o')str.pop_back();
-	reverse(str.begin(), str.end());
-	cout << str << '\n';
+	ll h, w; cin >> h >> w;
+	vector<string> mat;
+	for (ll i = 0; i < h; i++) {
+		string temp; cin >> temp;
+		mat.push_back(temp);
+	}
+	debug(mat);
+	ll ans = 0 ;
+	for (ll i1 = 0; i1 < h; i1++) {
+		for (ll i2 = i1; i2 < h; i2++) {
+			for (ll j1 = 0; j1 < w; j1++) {
+				for (ll j2 = j1; j2 < w; j2++) {
+					// we need to check
+					bool ck = true;
+					for (ll i = i1; i <= i2; i++) {
+						for (ll j = j1; j <= j2; j++) {
+							if (mat[i][j] != mat[i1 + i2 - i][j1 + j2 - j]) {
+								ck = false;
+								break;
+							}
+						}
+					}
+					ans += ck;
+				}
+			}
+		}
+	}
+	cout << ans << endl;
 }
 
 

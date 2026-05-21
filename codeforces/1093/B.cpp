@@ -1,5 +1,5 @@
-#include <algorithm>
 #include <bits/stdc++.h>
+#include <pthread.h>
 
 #ifndef ONLINE_JUDGE
 #include "../../debug.h"
@@ -26,11 +26,26 @@ const ld eps = 1e-12;
 
 void solve() {
 	ll n; cin >> n;
-	string str; cin >> str;
-	reverse(str.begin(), str.end());
-	while (str.size() && str.back() == 'o')str.pop_back();
-	reverse(str.begin(), str.end());
-	cout << str << '\n';
+	ll m; cin >> m;
+	vector<ll> a(n);
+	for (auto & pos : a)cin >> pos;
+	ll ct = 1;
+	ll maxi = 1 ;
+	for (ll i = 1; i < n; i++) {
+		if (a[i] != a[i - 1]) {
+			ct = 1;
+		} else ct ++;
+		maxi = max(maxi, ct);
+	}
+
+	if (maxi >= m) {
+		cout << "No\n";
+		return;
+	}
+	cout << "Yes\n";
+
+
+
 }
 
 
@@ -45,7 +60,7 @@ int main() {
 	freopen("F:\\cp_sublime\\debug.txt", "w", stderr);
 #endif
 	int tt = 1;
-	// cin >> tt;
+	cin >> tt;
 	while (tt--)
 		solve();
 }

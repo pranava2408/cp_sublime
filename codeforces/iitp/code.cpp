@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
@@ -25,12 +24,48 @@ const ld eps = 1e-12;
 
 
 void solve() {
-	ll n; cin >> n;
-	string str; cin >> str;
-	reverse(str.begin(), str.end());
-	while (str.size() && str.back() == 'o')str.pop_back();
-	reverse(str.begin(), str.end());
-	cout << str << '\n';
+	ll n, q; cin >> n >> q;
+	vector<ll> a(n);
+	for (auto &pos : a)cin >> pos;
+	stack<ll> st;
+	vector<ll> idx(n, -1);
+	for (ll i = 0; i < n; i++) {
+		while (st.size() && a[st.top()] <= a[i]) {
+			st.pop();
+		}
+		if (st.size()) {
+			idx[i] = st.top();
+		}
+		st.push(i);
+	}
+
+	vector<ll> idx1(n, n );
+	stack<ll> st1;
+	for (ll i = n - 1; i >= 0; i--) {
+		while (st1.size() && a[st1.top()] <= a[i]) {
+			st1.pop();
+		}
+		if (st1.size()) {
+			idx1[i] = st1.top();
+		}
+		st1.push(i);
+	}
+
+	vector<ll> pref(n + 1, 0);
+	for (ll i = 1; i <= n; i++) {
+		pref[i] = pref[i - 1] + (i - 1 - idx[i - 1]) * (idx1[i - 1] - i + 1);
+
+	}
+
+	debug(idx1, idx);
+	debug(pref);
+
+	while (q--) {
+		ll l, r; cin >> l >> r;
+		cout << (pref[r] - pref[l - 1]) << endl;
+	}
+
+
 }
 
 

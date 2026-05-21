@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
@@ -26,11 +25,36 @@ const ld eps = 1e-12;
 
 void solve() {
 	ll n; cin >> n;
-	string str; cin >> str;
-	reverse(str.begin(), str.end());
-	while (str.size() && str.back() == 'o')str.pop_back();
-	reverse(str.begin(), str.end());
-	cout << str << '\n';
+	vector<ll> a(n);
+	for (auto &pos : a)cin >> pos;
+	ll total = 100 * n;
+
+	vector<bool> prev(total + 1, false);
+	// can[0] = true;
+	prev[0] = true;
+	for (ll i = 0; i < n; i++) {
+		auto cur = prev;
+		ll val  = 100/a[i];
+		for (ll j = val; j <= 100; j += val) {
+			for (ll k = total; k >= j; k--) {
+				if (prev[k - j]) {
+					cur[k] = true;
+				}
+			}
+		}
+
+		prev = cur;
+	}
+
+	for (ll i = 0; i <= total; i++)
+	{
+		if (!prev[i]) {
+			cout << "No\n";
+			return;
+		}
+	}
+	cout << "Yes\n";
+
 }
 
 
@@ -45,7 +69,7 @@ int main() {
 	freopen("F:\\cp_sublime\\debug.txt", "w", stderr);
 #endif
 	int tt = 1;
-	// cin >> tt;
+	cin >> tt;
 	while (tt--)
 		solve();
 }
