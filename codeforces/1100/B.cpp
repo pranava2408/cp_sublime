@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <cinttypes>
 
 #ifndef ONLINE_JUDGE
 #include "../../debug.h"
@@ -25,14 +26,27 @@ const ld eps = 1e-12;
 
 void solve() {
 	ll n; cin >> n;
-	ll val = 1;
-	while (n) {
-		cout << val << " ";
-		val += 2;
-		n--;
+	vector<ll> a(n), b(n);
+	for (auto &pos : a)cin >> pos;
+	for (auto &pos : b)cin >> pos;
+	vector<ll> maxi(n);
+	for (ll i = 0; i < n; i++) {
+		maxi[i] = max(a[i], b[i]);
 	}
-	cout << "\n";
+
+	vector<ll> pref(n + 1, 0);
+	for (ll i = 0; i < n; i++) {
+		pref[i + 1] = pref[i] + maxi[i];
+	}
+
+
+	ll ans = 0;
+	for (ll i = 0; i < n; i++) {
+		ans = max(ans, a[i] + pref[i] + pref[n] - pref[i + 1] + b[i]);
+	}
+	cout<<ans<<"\n";
 }
+
 
 
 

@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <bits/stdc++.h>
+#include <numeric>
 
 #ifndef ONLINE_JUDGE
 #include "../../debug.h"
@@ -25,14 +27,36 @@ const ld eps = 1e-12;
 
 void solve() {
 	ll n; cin >> n;
-	ll val = 1;
-	while (n) {
-		cout << val << " ";
-		val += 2;
-		n--;
+	vector<ll> a(n);
+	for (auto &pos : a)cin >> pos;
+	// ll sum = accumulate(a.begin(), a.end() , 0ll);
+	// ll avg = (sum / n);
+
+	// ll ans = 0;
+	// for(auto pos:a){
+	// 	ans = max(ans,abs(pos-avg));
+	// }
+	// ll ans1 = 0;
+	// avg ++;
+	// for(auto pos:a){
+	// 	ans1 = max(ans1,abs(pos-avg));
+	// }
+	// cout<<min(ans,ans1)<<"\n";
+
+	// ll maxi = *max_element(a.begin(),a.end());
+	ll answer = 1e18;
+	for (ll avg = 1; avg <= 1000; avg++) {
+		ll ans = 0;
+		for (auto pos : a) {
+			ans = max(ans, abs(pos - avg));
+		}
+		
+		answer = min(answer,ans);
 	}
-	cout << "\n";
+	cout<<answer<<"\n";
+
 }
+
 
 
 

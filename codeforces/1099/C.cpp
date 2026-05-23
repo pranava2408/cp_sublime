@@ -25,14 +25,56 @@ const ld eps = 1e-12;
 
 void solve() {
 	ll n; cin >> n;
-	ll val = 1;
-	while (n) {
-		cout << val << " ";
-		val += 2;
-		n--;
+	vector<ll> a(n);
+	for (auto &pos : a)cin >> pos;
+	map<ll, ll> prev;
+	prev[a[0]] = 0;
+	ll op = 0;
+	while (1) {
+		op ++;
+		if (a[0] & 1) {
+			a[0]++;
+		} else {
+			a[0] >>= 1;
+		}
+		if (prev.find(a[0]) != prev.end())break;
+		prev[a[0]] = op;
 	}
-	cout << "\n";
+	debug(prev);
+	for (ll i = 1; i < n; i++) {
+		map<ll, ll> cur;
+
+		if (prev.find(a[i]) != prev.end()) {
+			cur[a[i]] = prev[a[i]];
+		}
+
+
+
+		ll ops = 0;
+		while (1) {
+			ops ++;
+			if (a[i] & 1) {
+				a[i]++;
+			} else {
+				a[i] >>= 1;
+			}
+			if(cur.find(a[i])!=cur.end())break;
+			if (prev.find(a[i]) != prev.end()) {
+				cur[a[i]] = ops;
+				cur[a[i]] += prev[a[i]];
+			}
+		}
+		prev = cur;
+		debug(cur);
+
+
+	}
+
+	ll ans = 1e18;
+	for (auto &pos : prev)ans = min(ans, pos.second);
+	cout << ans << "\n";
 }
+
 
 
 

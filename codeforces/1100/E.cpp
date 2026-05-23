@@ -24,15 +24,9 @@ const ld eps = 1e-12;
 
 
 void solve() {
-	ll n; cin >> n;
-	ll val = 1;
-	while (n) {
-		cout << val << " ";
-		val += 2;
-		n--;
-	}
-	cout << "\n";
+  	
 }
+
 
 
 

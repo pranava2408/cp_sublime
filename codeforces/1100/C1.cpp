@@ -24,15 +24,22 @@ const ld eps = 1e-12;
 
 
 void solve() {
-	ll n; cin >> n;
-	ll val = 1;
-	while (n) {
-		cout << val << " ";
-		val += 2;
-		n--;
-	}
-	cout << "\n";
+  ll n;cin>>n;
+  vector<ll> a(n);
+  for(auto &pos:a)cin>>pos;
+  vector<ll> ops;
+  ll sign = 1;
+  for(ll i=n-1;i>=0;i--){
+  	if(a[i] * sign > 0){
+  		ops.push_back(i+1);
+  		sign *= (-1);
+  	}
+  }	
+  cout<<ops.size()<<"\n";
+  for(auto pos:ops)cout<<pos<<" ";
+  cout<<"\n";
 }
+
 
 
 
