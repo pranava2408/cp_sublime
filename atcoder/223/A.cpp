@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
+#include <pthread.h>
 
 #ifndef ONLINE_JUDGE
-#include "debug.h"
+#include "../../debug.h"
 #else
 #define debug(...)
 #endif
@@ -22,37 +23,38 @@ using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_ord
 
 const ld eps = 1e-12;
 
-struct DSU {
-  vector<ll> parent;
-  vector<ll> rank;
-  ll N;
-
-  void init(ll n) {
-    N = n;
-    parent.resize(n + 1);
-    rank.resize(n + 1, 1);
-    for (ll i = 1; i <= n; i++) {
-      parent[i] = i;
-    }
-  }
-  ll get(ll node) {
-    return (parent[node] == node ? node : parent[node] = get(parent[node]));
-  }
-
-  bool unite(ll a, ll b) {
-    ll A = get(a);
-    ll B = get(b);
-    if (rank[A] < rank[B]) swap(B, A);
-    if (A == B) return false;
-
-    parent[B] = A;
-    rank[A] += rank[B];
-    return true;
-  }
-};
 
 void solve() {
-  	
+	ll n,m;cin>>n>>m;
+	vector<pair<ll, ll>> temp;
+	for(ll i=0;i<n;i++){
+		ll a,b;cin>>a>>b;
+		temp.emplace_back(a,b);
+	}	
+	// we don't take the last element ?
+	ll answer = 0;
+	vector<ll> pref(n+1,0);
+	for(ll i=0;i<n-1;i++){
+		pref[i+1] = pref[i] + temp[i].second;
+		// answer += temp[i].second;
+	}
+	answer = pref[n];
+	
+	// we take the last element ..
+	
+	
+	ll cur = 0;
+	ll tot = 0;
+	for(ll i=n-1;i>=0;i--){
+		if(m>=temp[i].first){
+			answer = max(answer,pref[i] + tot);
+			m -= temp[i].first;
+			tot += temp[i].second;
+		}
+	}
+	answer = max(answer,tot);
+	cout<<answer<<"\n";
+	
 }
 
 

@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
-#include "debug.h"
+#include "../../debug.h"
 #else
 #define debug(...)
 #endif
@@ -22,37 +22,25 @@ using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_ord
 
 const ld eps = 1e-12;
 
-struct DSU {
-  vector<ll> parent;
-  vector<ll> rank;
-  ll N;
-
-  void init(ll n) {
-    N = n;
-    parent.resize(n + 1);
-    rank.resize(n + 1, 1);
-    for (ll i = 1; i <= n; i++) {
-      parent[i] = i;
-    }
-  }
-  ll get(ll node) {
-    return (parent[node] == node ? node : parent[node] = get(parent[node]));
-  }
-
-  bool unite(ll a, ll b) {
-    ll A = get(a);
-    ll B = get(b);
-    if (rank[A] < rank[B]) swap(B, A);
-    if (A == B) return false;
-
-    parent[B] = A;
-    rank[A] += rank[B];
-    return true;
-  }
-};
 
 void solve() {
-  	
+	ll n; cin >> n;
+	vector<ll> a(n);
+	for (auto &pos : a)cin >> pos;
+	set<ll> st;
+	for (int i = 0; i < n; i++) {
+		st.insert(a[i] % n);
+	}
+	if (st.size() == n) {
+		ll ans = 1;
+		for (int i = 1; i < n; i++) {
+			ans *= i;
+			ans %= n;
+		}
+		cout << ans << "\n";
+		return;
+	}
+	cout<<0<<"\n";
 }
 
 

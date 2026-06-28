@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
 #ifndef ONLINE_JUDGE
-#include "debug.h"
+#include "../../debug.h"
 #else
 #define debug(...)
 #endif
@@ -22,37 +22,41 @@ using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_ord
 
 const ld eps = 1e-12;
 
-struct DSU {
-  vector<ll> parent;
-  vector<ll> rank;
-  ll N;
-
-  void init(ll n) {
-    N = n;
-    parent.resize(n + 1);
-    rank.resize(n + 1, 1);
-    for (ll i = 1; i <= n; i++) {
-      parent[i] = i;
-    }
-  }
-  ll get(ll node) {
-    return (parent[node] == node ? node : parent[node] = get(parent[node]));
-  }
-
-  bool unite(ll a, ll b) {
-    ll A = get(a);
-    ll B = get(b);
-    if (rank[A] < rank[B]) swap(B, A);
-    if (A == B) return false;
-
-    parent[B] = A;
-    rank[A] += rank[B];
-    return true;
-  }
-};
 
 void solve() {
-  	
+	ll n, c; cin >> n >> c;
+	vector<ll> a(n), b(n);
+	for (auto &pos : a)cin >> pos;
+	for (auto &pos : b)cin >> pos;
+	ll ans = 0 ;
+	bool ck = false;
+	for (int i = 0; i < n; i++) {
+		if (a[i] >= b[i]) {
+			ans += a[i] - b[i];
+		}
+		else {
+			ck = true;
+			break;
+		}
+	}
+	if (!ck) {
+		cout << ans << "\n";
+		return;
+	}
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+	ll sum = c;
+	for (int i = 0; i < n; i++) {
+		if (a[i] >= b[i]) {
+			sum += a[i]-b[i];
+		}else{
+			cout<<-1<<"\n";
+			return;
+		}
+		
+	}
+	cout<<sum<<"\n";
+
 }
 
 
